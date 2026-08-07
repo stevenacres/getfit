@@ -10,4 +10,4 @@ pages_build_output_dir = "."
 [[d1_databases]]
 binding = "DB"                 # the code reads env.DB — keep this name
 database_name = "getfit-db"
-database_id = "PASTE_YOUR_DATABASE_ID_HERE"
+database_id = "2dbda54b-cd94-4ea3-8798-06d196109ee8"
