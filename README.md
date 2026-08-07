@@ -1,21 +1,54 @@
 # GetFit
 
-A 20-minute daily workout tracker. Static frontend + Cloudflare Pages Functions API + Cloudflare D1 (SQLite) for your logged workouts.
+A 20-minute daily workout tracker built on the DailyRepsGuy blueprint. Static frontend + Cloudflare Pages Functions API + Cloudflare D1 (SQLite) for your logged workouts.
 
 ```
 getfit/
 ├─ index.html            # app shell
 ├─ styles.css            # styling (navy DailyRepsGuy identity)
-├─ app.js                # regimen data + logging + timer + history
+├─ app.js                # movement library + randomizer + logging + timer + history
 ├─ manifest.json         # add-to-home-screen
 ├─ schema.sql            # D1 tables (run once)
 ├─ wrangler.toml         # Pages + D1 config
+├─ .claude/launch.json   # local static preview (python http.server)
 └─ functions/
    └─ api/
       └─ [[path]].js      # the API (runs on Cloudflare, talks to D1)
 ```
 
-Your workout **plan** lives in `app.js` (edit the `PLAN` object anytime). Your **logs** live in D1.
+Your **movement library** lives in `app.js` (the `LIBRARY` object). Your **phases and equipment** live in the browser (localStorage, editable in the Settings tab). Your **logs** live in D1.
+
+---
+
+## How the workouts work
+
+Straight from the PDF's blueprint:
+
+1. One movement from **each body part** — Arms/Chest, Legs, Abs, Back — drawn from whatever **phase** you're in for that body part.
+2. Plus **2 extra movements** for the day's focus → **6 movements** total.
+3. 20-minute timer, circuit as many rounds as you can, 10–45s rest.
+4. Move up a phase when the movements get easy.
+
+| Day | Focus |
+|-----|-------|
+| Monday | Arms / Chest |
+| Tuesday | Legs |
+| Wednesday | Abs / Core |
+| Thursday | Back |
+| Friday | Full body (extras come from two random body parts) |
+
+**Phases** are per body part — the PDF is explicit that you might be Phase 3 for legs and Phase 1 for back. Set each one in the **Settings** tab. Phase 4 (Pro) draws from the Phase 3 pool and flags "add weight", exactly as the PDF describes it.
+
+**Equipment** is a set of toggles in Settings; movements you don't have the kit for never get picked. Ships configured for dumbbells, EZ curl bar, bench and a pull-up/dip station, with **kettlebells off** — flip that on when yours arrive and ~15 kettlebell movements unlock across the four body parts.
+
+### Randomization
+
+- The week's six-movement list is **randomized per day and fixed for the week**, so Tuesday looks the same whether you check it Monday night or Tuesday morning. A new week rolls a fresh set automatically.
+- **⟳ Re-roll this day** — rebuilds that whole day.
+- **⟳ Swap** on any movement — replaces just that one with a different movement **from the same body part and phase**, so a core movement always swaps for another core movement. Anything you've already typed into the other cards is preserved.
+- **⟳ Re-roll the whole week** in Settings.
+
+Re-rolls and swaps are remembered per week in localStorage (per device — they don't sync between your phone and desktop).
 
 ---
 
@@ -77,7 +110,10 @@ wrangler pages deploy
 
 ## Making changes
 
-- **Change the workouts:** edit the `PLAN` object at the top of `app.js`, push to GitHub — Pages redeploys automatically.
+- **Change your phases or equipment:** the **Settings** tab in the app. No code, no redeploy.
+- **Add or edit movements:** edit the `LIBRARY` object at the top of `app.js` — it's keyed by body part, then phase. Each movement is `{ name, target, info, equip: [] }`, where `equip` lists what it needs (`dumbbell`, `ezbar`, `bench`, `station`, `kettlebell`); leave it off for bodyweight. Push to GitHub — Pages redeploys automatically.
+- **Change the week's focus days:** the `WEEK` object in `app.js`.
+- **Preview locally:** `python -m http.server 8788` in the project root, then open `http://localhost:8788`. The `/api/*` calls 404 without D1, which the app handles — the Workout and Settings tabs work fine.
 - **Change the look:** it's all in `styles.css`. The color tokens are at the top (`:root`).
 - **See your data:** D1 → your database → **Console**, e.g. `SELECT * FROM sessions ORDER BY date DESC;`
 

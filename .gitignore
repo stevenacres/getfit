@@ -2,3 +2,7 @@ node_modules/
 .wrangler/
 .dev.vars
 .DS_Store
+
+# Source material — DailyRepsGuy's PDF is his to distribute, not ours.
+# The movement library in app.js is derived from it; the file itself stays local.
+*.pdf

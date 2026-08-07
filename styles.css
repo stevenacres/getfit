@@ -7,7 +7,7 @@
   --navy: #2c2f63;
   --muted: #6d71a0;
   --line: #e5e6f0;
-  --amber: #e0a441;      /* KEY LIFT spotlight */
+  --amber: #e0a441;      /* FOCUS SET spotlight */
   --amber-ink: #5a3d05;
   --good: #2f8f5b;
   --shadow: 0 1px 3px rgba(20,20,40,.08), 0 6px 18px rgba(20,20,40,.05);
@@ -70,6 +70,15 @@ main { max-width: var(--maxw); margin: 0 auto; padding: 14px 14px 8px; }
 }
 .recipe b { color: var(--navy); }
 
+.rerollbtn {
+  display: block; margin-top: 9px;
+  appearance: none; cursor: pointer;
+  background: #fff; color: var(--navy); border: 1px solid #ccd0ea;
+  font-size: 12px; font-weight: 700; letter-spacing: .2px;
+  padding: 7px 12px; border-radius: 8px;
+}
+.rerollbtn:active { transform: translateY(1px); }
+
 /* ---------- movement cards ---------- */
 .move {
   background: var(--card); border-radius: var(--radius);
@@ -81,11 +90,30 @@ main { max-width: var(--maxw); margin: 0 auto; padding: 14px 14px 8px; }
 .move-head { display: flex; align-items: baseline; gap: 8px; padding: 13px 14px 8px; }
 .move-name { font-size: 16px; font-weight: 700; letter-spacing: -0.2px; }
 .keytag {
-  font-size: 10px; font-weight: 800; letter-spacing: .6px;
+  font-size: 10px; font-weight: 800; letter-spacing: .6px; white-space: nowrap;
   background: var(--amber); color: var(--amber-ink);
   padding: 2px 7px; border-radius: 5px; text-transform: uppercase;
 }
 .move-target { margin-left: auto; font-size: 12px; font-weight: 700; color: var(--muted); white-space: nowrap; }
+
+/* body part + phase line, with the per-movement swap button */
+.move-meta { display: flex; align-items: center; gap: 8px; padding: 0 14px 9px; }
+.cattag {
+  font-size: 10.5px; font-weight: 700; letter-spacing: .4px; text-transform: uppercase;
+  color: var(--muted); background: #f1f2fa; border-radius: 5px; padding: 3px 7px;
+}
+.protag {
+  font-size: 10.5px; font-weight: 800; letter-spacing: .4px; text-transform: uppercase;
+  color: var(--amber-ink); background: #fdf3dc; border: 1px solid #f0dca6;
+  border-radius: 5px; padding: 2px 6px;
+}
+.swapbtn {
+  margin-left: auto; appearance: none; cursor: pointer;
+  background: #fff; color: var(--navy); border: 1px solid #ccd0ea;
+  font-size: 11.5px; font-weight: 700; padding: 5px 10px; border-radius: 7px;
+  white-space: nowrap;
+}
+.swapbtn:active { transform: translateY(1px); }
 
 .move-info {
   padding: 0 14px 10px; font-size: 12.5px; line-height: 1.45; color: #555;
@@ -145,6 +173,42 @@ main { max-width: var(--maxw); margin: 0 auto; padding: 14px 14px 8px; }
   padding: 13px 18px; border-radius: 11px;
 }
 .save:active { transform: translateY(1px); }
+
+/* ---------- settings ---------- */
+.panel {
+  background: var(--card); border-radius: var(--radius);
+  box-shadow: var(--shadow); margin: 12px 0; overflow: hidden;
+}
+.panel-title {
+  font-size: 11.5px; font-weight: 800; letter-spacing: .8px; text-transform: uppercase;
+  color: var(--muted); margin: 18px 2px 0;
+}
+
+.setrow {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 14px; border-bottom: 1px solid var(--line);
+}
+.setrow:last-child { border-bottom: 0; }
+.setrow-label { min-width: 0; }
+.setrow-name { font-size: 14.5px; font-weight: 700; letter-spacing: -0.2px; }
+.setrow-sub { font-size: 11.5px; color: var(--muted); margin-top: 2px; }
+
+.phasepills { display: flex; gap: 5px; margin-left: auto; }
+.phasepill {
+  appearance: none; cursor: pointer;
+  width: 32px; height: 32px; border-radius: 8px;
+  border: 1px solid var(--line); background: #fbfbfe; color: var(--muted);
+  font-size: 13px; font-weight: 800;
+}
+.phasepill.is-active { background: var(--navy); color: #fff; border-color: var(--navy); }
+
+.equiprow {
+  display: flex; align-items: center; gap: 11px;
+  padding: 12px 14px; border-bottom: 1px solid var(--line);
+  font-size: 14.5px; font-weight: 600; cursor: pointer;
+}
+.equiprow:last-child { border-bottom: 0; }
+.equiprow input { width: 19px; height: 19px; accent-color: var(--navy-2); cursor: pointer; }
 
 /* ---------- history ---------- */
 .hist-card {
