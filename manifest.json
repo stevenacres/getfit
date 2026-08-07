@@ -3,8 +3,8 @@
   "short_name": "GetFit",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#14141a",
-  "theme_color": "#2a2d5e",
+  "background_color": "#060607",
+  "theme_color": "#060607",
   "description": "Your 20-minute daily workout tracker",
   "icons": []
 }

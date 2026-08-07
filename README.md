@@ -5,7 +5,7 @@ A 20-minute daily workout tracker built on the DailyRepsGuy blueprint. Static fr
 ```
 getfit/
 ├─ index.html            # app shell
-├─ styles.css            # styling (navy DailyRepsGuy identity)
+├─ styles.css            # dark-only interface (near-black + acid lime)
 ├─ app.js                # movement library + randomizer + logging + timer + history
 ├─ manifest.json         # add-to-home-screen
 ├─ schema.sql            # D1 tables (run once)
@@ -114,7 +114,7 @@ wrangler pages deploy
 - **Add or edit movements:** edit the `LIBRARY` object at the top of `app.js` — it's keyed by body part, then phase. Each movement is `{ name, target, info, equip: [] }`, where `equip` lists what it needs (`dumbbell`, `ezbar`, `bench`, `station`, `kettlebell`); leave it off for bodyweight. Push to GitHub — Pages redeploys automatically.
 - **Change the week's focus days:** the `WEEK` object in `app.js`.
 - **Preview locally:** `python -m http.server 8788` in the project root, then open `http://localhost:8788`. The `/api/*` calls 404 without D1, which the app handles — the Workout and Settings tabs work fine.
-- **Change the look:** it's all in `styles.css`. The color tokens are at the top (`:root`).
+- **Change the look:** it's all in `styles.css` — tokens at the top (`:root`). The interface is **dark only**; there's one accent (`--accent`, acid lime) doing all the work, so recoloring the app is a one-line change. Type is Clash Display (headings) + Satoshi (UI), loaded from Fontshare with a system fallback stack.
 - **See your data:** D1 → your database → **Console**, e.g. `SELECT * FROM sessions ORDER BY date DESC;`
 
 ## Notes

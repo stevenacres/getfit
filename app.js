@@ -384,24 +384,24 @@ function renderWorkout(keepInputs) {
     const phase = settings.phases[slot.cat];
     const sets = Array.from({ length: SETS_PER_MOVE }, (_, s) => `
       <div class="set-row">
-        <div class="snum">Set ${s + 1}</div>
+        <div class="snum">${s + 1}</div>
         <input type="number" inputmode="decimal" placeholder="weight" data-mv="${esc(m.name)}" data-set="${s + 1}" data-field="weight" />
         <input type="number" inputmode="numeric" placeholder="reps" data-mv="${esc(m.name)}" data-set="${s + 1}" data-field="reps" />
       </div>`).join("");
 
     return `
-      <section class="move ${slot.focus ? "key" : ""}">
-        <div class="move-head">
-          <span class="move-name">${esc(m.name)}</span>
-          ${slot.focus ? '<span class="keytag">Focus set</span>' : ""}
-          <span class="move-target">${esc(m.target)}</span>
+      <section class="move ${slot.focus ? "is-focus" : ""}" style="animation-delay:${i * 55}ms">
+        <div class="move-top">
+          <h3 class="move-name">${esc(m.name)}</h3>
+          <button class="move-swap" data-swap="${i}" title="Swap for another ${esc(CATEGORIES[slot.cat])} movement" aria-label="Swap ${esc(m.name)}">⟳</button>
         </div>
-        <div class="move-meta">
-          <span class="cattag">${esc(CATEGORIES[slot.cat])} · Phase ${phase}</span>
-          ${phase === 4 ? '<span class="protag">Add weight</span>' : ""}
-          <button class="swapbtn" data-swap="${i}" title="Swap for another ${esc(CATEGORIES[slot.cat])} movement">⟳ Swap</button>
+        <div class="move-tags">
+          ${slot.focus ? '<span class="tag tag-focus">Focus set</span>' : ""}
+          <span class="tag tag-target">${esc(m.target)}</span>
+          <span class="tag">${esc(CATEGORIES[slot.cat])} · P${phase}</span>
+          ${phase === 4 ? '<span class="tag tag-pro">Add weight</span>' : ""}
         </div>
-        <div class="move-info">${esc(m.info)}</div>
+        <p class="move-info">${esc(m.info)}</p>
         <div class="move-last" data-last="${esc(m.name)}"></div>
         <div class="sets">${sets}</div>
       </section>`;
@@ -412,21 +412,27 @@ function renderWorkout(keepInputs) {
     : "";
 
   document.getElementById("view").innerHTML = `
-    <div class="dayhead">
-      <div class="weekday">${WEEK[dayKey].label}</div>
-      <div class="focus">Focus: ${esc(dayFocusLabel(dayKey))}</div>
+    <section class="hero">
+      <div class="hero-eyebrow">${esc(WEEK[dayKey].label)} · ${currentSlots.length} movements</div>
+      <h1 class="hero-title">${esc(dayFocusLabel(dayKey))}</h1>
+      <div class="hero-focus">20 minutes</div>
+      <div class="daypicker">${pills}</div>
+    </section>
+
+    <div class="brief">
+      <p>
+        Warm up 1–2 min, start the timer, then circuit through all ${currentSlots.length}.
+        Push the <b>focus sets</b> hard — rest 30–45s. Keep the rest quick, 10–20s.
+        Beat last time.
+      </p>
+      <button class="btn" id="rerollBtn"><span class="ico">⟳</span> Re-roll this day</button>
     </div>
-    <div class="daypicker">${pills}</div>
-    <div class="recipe">
-      <b>Run it:</b> warm up 1–2 min, start the 20-minute timer, then circuit through all ${currentSlots.length}.
-      Push the <b>focus sets</b> hard (rest 30–45s); keep the rest quick (10–20s).
-      Log what you do and beat last time.
-      <button class="rerollbtn" id="rerollBtn">⟳ Re-roll this day</button>
-    </div>
+
     ${empty}
-    ${moves}
+    <div class="moves">${moves}</div>
+
     <div class="session-meta">
-      <input type="number" inputmode="numeric" id="roundsInput" placeholder="Rounds" />
+      <input type="number" inputmode="numeric" id="roundsInput" placeholder="Rounds completed" />
       <input type="text" id="notesInput" placeholder="Notes (optional)" />
     </div>`;
 
@@ -544,40 +550,51 @@ function renderSettings() {
     ).join("");
     return `
       <div class="setrow">
-        <div class="setrow-label">
+        <div>
           <div class="setrow-name">${esc(CATEGORIES[cat])}</div>
-          <div class="setrow-sub">Phase ${cur} · ${PHASE_NAMES[cur]} · ${availableMoves(cat, cur).length} movements</div>
+          <div class="setrow-sub">${PHASE_NAMES[cur]} · ${availableMoves(cat, cur).length} movements in the pool</div>
         </div>
         <div class="phasepills">${pills}</div>
       </div>`;
   }).join("");
 
-  const equip = Object.keys(EQUIPMENT).map(k => `
-    <label class="equiprow">
-      <input type="checkbox" data-equip="${k}" ${settings.equipment[k] ? "checked" : ""} />
-      <span>${esc(EQUIPMENT[k])}</span>
-    </label>`).join("");
+  const equip = Object.keys(EQUIPMENT).map(k => {
+    const n = CAT_ORDER.reduce((sum, c) =>
+      sum + [1, 2, 3].reduce((s, p) =>
+        s + (LIBRARY[c][p] || []).filter(m => (m.equip || []).includes(k)).length, 0), 0);
+    return `
+      <label class="equiprow">
+        <input type="checkbox" data-equip="${k}" ${settings.equipment[k] ? "checked" : ""} />
+        <span class="box" aria-hidden="true"></span>
+        <span>${esc(EQUIPMENT[k])}</span>
+        <span class="sub">${n} movement${n === 1 ? "" : "s"}</span>
+      </label>`;
+  }).join("");
 
   document.getElementById("view").innerHTML = `
-    <div class="dayhead">
-      <div class="weekday">Settings</div>
-      <div class="focus">Your phases &amp; equipment</div>
+    <section class="hero">
+      <div class="hero-eyebrow">Configuration</div>
+      <h1 class="hero-title">Settings</h1>
+      <div class="hero-focus">Phases &amp; kit</div>
+    </section>
+
+    <div class="brief">
+      <p>
+        You can sit at a <b>different phase for each body part</b> — straight from the PDF.
+        Move up when you can add 2 extra reps on your last set, two workouts running.
+        Phase 4 draws from the Phase 3 pool and tells you to add load.
+      </p>
     </div>
 
-    <div class="recipe">
-      <b>Phases:</b> you can be a different phase for each body part — that's straight from the PDF.
-      Move up when you can add 2 extra reps on your last set two workouts in a row.
-      Phase 4 draws from Phase 3 and tells you to add load.
-    </div>
-
+    <div class="section-label">Phase by body part</div>
     <div class="panel">${cats}</div>
 
-    <div class="panel-title">Equipment</div>
+    <div class="section-label">Equipment</div>
     <div class="panel">${equip}</div>
 
-    <div class="recipe" style="margin-top:14px">
-      Changing any of this re-rolls the movements you haven't already swapped by hand.
-      <button class="rerollbtn" id="rerollWeekBtn">⟳ Re-roll the whole week</button>
+    <div class="brief" style="margin-top:22px">
+      <p>Changing any of this re-rolls the movements you haven't already swapped by hand.</p>
+      <button class="btn" id="rerollWeekBtn"><span class="ico">⟳</span> Re-roll the whole week</button>
     </div>`;
 }
 
@@ -587,21 +604,28 @@ async function renderHistory() {
   view.innerHTML = `<div class="empty">Loading your history…</div>`;
   try {
     const { sessions } = await api("/sessions");
+    const hero = `
+      <section class="hero">
+        <div class="hero-eyebrow">${sessions.length} session${sessions.length === 1 ? "" : "s"} logged</div>
+        <h1 class="hero-title">History</h1>
+        <div class="hero-focus">Every rep</div>
+      </section>`;
+
     if (!sessions.length) {
-      view.innerHTML = `<div class="empty">No workouts logged yet.<br>Head to the Workout tab and log your first session — it'll show up here.</div>`;
+      view.innerHTML = hero + `<div class="empty"><b>Nothing logged yet</b>Head to the Workout tab and log your first session — it'll show up here.</div>`;
       return;
     }
-    view.innerHTML = sessions.map(s => `
-      <div class="hist-card" data-id="${s.id}">
+    view.innerHTML = hero + `<div class="hist-grid">` + sessions.map((s, i) => `
+      <div class="hist-card" data-id="${s.id}" style="animation-delay:${Math.min(i, 12) * 45}ms">
         <div class="hist-top">
           <span class="hist-date">${fmtDate(s.date)}</span>
           <span class="hist-focus">${esc(s.focus || (WEEK[s.day_key] && dayFocusLabel(s.day_key)) || "")}</span>
           <span class="hist-sub">${s.entry_count} sets${s.rounds ? " · " + s.rounds + " rounds" : ""}</span>
         </div>
         <div class="hist-detail" data-detail="${s.id}"></div>
-      </div>`).join("");
+      </div>`).join("") + `</div>`;
   } catch (err) {
-    view.innerHTML = `<div class="empty">Couldn't load history.<br>${esc(err.message)}</div>`;
+    view.innerHTML = `<div class="empty"><b>Couldn't load history</b>${esc(err.message)}</div>`;
   }
 }
 
@@ -616,10 +640,10 @@ async function toggleHistoryCard(card) {
       const rows = entries.map(e => {
         const w = e.weight != null ? e.weight + "×" : "";
         const val = w + (e.reps != null ? e.reps : "–");
-        return `<div class="row"><span class="mv">${esc(e.movement)} <small style="color:#9a9ab0">· set ${e.set_number ?? "–"}</small></span><span>${val}</span></div>`;
+        return `<div class="row"><span class="mv">${esc(e.movement)} <small>· set ${e.set_number ?? "–"}</small></span><span class="val">${val}</span></div>`;
       }).join("");
       detail.innerHTML = (rows || `<div class="row">No sets recorded.</div>`) +
-        (session.notes ? `<div class="row" style="color:#6d71a0;margin-top:6px">“${esc(session.notes)}”</div>` : "") +
+        (session.notes ? `<div class="hist-note">“${esc(session.notes)}”</div>` : "") +
         `<button class="hist-del" data-del="${id}">Delete this workout</button>`;
       detail.dataset.loaded = "1";
     } catch (err) {
@@ -647,6 +671,8 @@ function fmtDate(iso) {
 // ----------------------------- 20-minute timer -----------------------------
 const timer = { total: 20 * 60, left: 20 * 60, running: false, handle: null };
 
+const RING_C = 2 * Math.PI * 21; // matches r=21 in the dock SVG
+
 function tickTimer() {
   timer.left = Math.max(0, timer.left - 1);
   paintTimer();
@@ -654,6 +680,7 @@ function tickTimer() {
     stopTimer();
     if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
     document.getElementById("timerTime").classList.add("done");
+    document.querySelector(".ring").classList.add("is-done");
     toast("Time! Nice work.");
   }
 }
@@ -661,6 +688,9 @@ function paintTimer() {
   const m = String(Math.floor(timer.left / 60)).padStart(2, "0");
   const s = String(timer.left % 60).padStart(2, "0");
   document.getElementById("timerTime").textContent = `${m}:${s}`;
+  // Ring depletes as the 20 minutes burn down.
+  const ring = document.getElementById("timerRing");
+  if (ring) ring.style.strokeDashoffset = String(RING_C * (1 - timer.left / timer.total));
 }
 function startTimer() {
   if (timer.running) return;
@@ -677,6 +707,7 @@ function resetTimer() {
   stopTimer();
   timer.left = timer.total;
   document.getElementById("timerTime").classList.remove("done");
+  document.querySelector(".ring").classList.remove("is-done");
   document.getElementById("timerToggle").textContent = "Start";
   paintTimer();
 }
@@ -748,4 +779,5 @@ document.getElementById("timerToggle").addEventListener("click", () => (timer.ru
 document.getElementById("timerReset").addEventListener("click", resetTimer);
 
 // ----------------------------- Boot -----------------------------
+paintTimer();
 setView("workout");
