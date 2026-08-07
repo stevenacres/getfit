@@ -1,0 +1,13 @@
+# GetFit — Cloudflare Pages + D1 config
+# Used by the Wrangler CLI for local dev and (optionally) deploys.
+# If you deploy by connecting the GitHub repo in the Cloudflare dashboard,
+# set the D1 binding in the dashboard too (Settings > Functions > D1 bindings).
+
+name = "getfit"
+compatibility_date = "2026-01-01"
+pages_build_output_dir = "."
+
+[[d1_databases]]
+binding = "DB"                 # the code reads env.DB — keep this name
+database_name = "getfit-db"
+database_id = "PASTE_YOUR_DATABASE_ID_HERE"
