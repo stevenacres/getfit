@@ -348,6 +348,7 @@ function captureInputs() {
   document.querySelectorAll(".set-row input").forEach(inp => {
     const mv = inp.getAttribute("data-mv");
     if (!mv || inp.value.trim() === "") return;
+    if (inp.dataset.prefill) return; // carried suggestion — re-applied after the render
     vals.sets[mv + "|" + inp.getAttribute("data-set") + "|" + inp.getAttribute("data-field")] = inp.value;
   });
   const r = document.getElementById("roundsInput");
@@ -455,6 +456,24 @@ async function loadLastNumbers() {
         el.innerHTML = `<span class="lbl">Last:</span> ${parts.join("  ·  ")}`;
       }
     });
+
+    /* Carry last session's weights forward so a new day starts with the numbers
+       you finished on. Only fills boxes that are still empty, and marks each one
+       so an untouched suggestion never gets logged as a set you didn't do.
+       "Last" means the last session that included THAT movement — with the
+       workouts randomized, that isn't always yesterday. */
+    document.querySelectorAll('.set-row input[data-field="weight"]').forEach(inp => {
+      if (inp.value !== "") return;
+      const rows = last[inp.getAttribute("data-mv")];
+      if (!rows || !rows.length) return;
+      const setNo = Number(inp.getAttribute("data-set"));
+      // Fewer sets logged last time than there are rows? Reuse the final one.
+      const row = rows.find(r => Number(r.set_number) === setNo) || rows[rows.length - 1];
+      if (!row || row.weight == null) return;
+      inp.value = row.weight;
+      inp.dataset.prefill = "1";
+      inp.classList.add("is-prefill");
+    });
   } catch (_) {
     // No history yet or offline — leave the "last" lines blank.
   }
@@ -501,7 +520,9 @@ async function saveWorkout() {
     const r = row.querySelector('[data-field="reps"]');
     const reps = r.value.trim();
     const weight = w.value.trim();
-    if (reps === "" && weight === "") return; // skip empty sets
+    // Skip empty sets — and rows holding nothing but a carried-over weight,
+    // which is a suggestion rather than something you actually lifted.
+    if (reps === "" && (weight === "" || w.dataset.prefill === "1")) return;
     const movement = r.getAttribute("data-mv");
     if (!byName.has(movement)) return;
     entries.push({
@@ -763,6 +784,18 @@ document.addEventListener("click", (e) => {
 
   const card = e.target.closest(".hist-card");
   if (card) return toggleHistoryCard(card);
+});
+
+document.addEventListener("input", (e) => {
+  const inp = e.target.closest(".set-row input");
+  if (!inp) return;
+  const row = inp.closest(".set-row");
+  const wt = row.querySelector('[data-field="weight"]');
+  const reps = row.querySelector('[data-field="reps"]');
+  // Editing the weight makes the number yours, not a carried suggestion.
+  if (inp === wt) delete wt.dataset.prefill;
+  // Once a row has reps, its carried weight stops looking provisional.
+  wt.classList.toggle("is-prefill", !!wt.dataset.prefill && reps.value.trim() === "");
 });
 
 document.addEventListener("change", (e) => {

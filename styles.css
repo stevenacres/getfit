@@ -318,6 +318,12 @@ main {
   background: rgba(0,0,0,.5);
   box-shadow: 0 0 0 3px rgba(201,242,77,.13);
 }
+/* A weight carried over from your last session — a starting point, not a log.
+   Reads as provisional until you type in it or add reps to the row. */
+.set-row input.is-prefill {
+  color: var(--muted); border-style: dashed; border-color: var(--hair);
+}
+.set-row input.is-prefill:focus { color: var(--text); border-style: solid; }
 
 /* ---------- session meta ---------- */
 .session-meta {

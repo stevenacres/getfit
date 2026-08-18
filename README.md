@@ -41,6 +41,12 @@ Straight from the PDF's blueprint:
 
 **Equipment** is a set of toggles in Settings; movements you don't have the kit for never get picked. Ships configured for dumbbells, EZ curl bar, bench and a pull-up/dip station, with **kettlebells off** — flip that on when yours arrive and ~15 kettlebell movements unlock across the four body parts.
 
+### Weights carry over
+
+When a movement comes up, its weight boxes are pre-filled with what you used **last time you did that movement** — with the workouts randomized that isn't always yesterday, which is exactly why it's keyed to the movement rather than the date. Reps are deliberately left blank; the weight is the thing you repeat, the reps are the thing you beat.
+
+A carried-over weight shows dimmed with a dashed border, meaning *suggestion, not record*. It becomes real the moment you type reps into that row or edit the weight yourself. **Untouched suggestions are never logged**, so hitting Save after doing only two of six movements records only those two — no phantom sets.
+
 ### Randomization
 
 - The week's six-movement list is **randomized per day and fixed for the week**, so Tuesday looks the same whether you check it Monday night or Tuesday morning. A new week rolls a fresh set automatically.
