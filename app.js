@@ -98,6 +98,8 @@ const LIBRARY = {
       { name: "Glute Bridges", target: "15–20 reps", info: "On your back, knees bent. Drive your hips up, squeeze your glutes hard, lower." },
       { name: "Step-Ups", target: "10–12 / leg", info: "Step up onto the bench with one foot, stand tall, step down under control.", equip: ["bench"] },
       { name: "Calf Raises", target: "20–30 reps", info: "Rise onto your toes as high as you can, pause at the top, lower slowly." },
+      { name: "Bent-Knee Calf Raises", target: "20–30 reps", info: "Knees bent about 30° and held there the whole set. Rise onto your toes, pause, lower slowly. Hits the soleus underneath the calf." },
+      { name: "Deficit Calf Raises", target: "15–25 reps", info: "Toes on the bench edge, heels hanging free. Drop the heels for a deep stretch, then press all the way up onto the toes.", equip: ["bench"] },
     ],
     2: [
       { name: "Goblet Squat", target: "12–15 reps", info: "One dumbbell held at your chest. Squat with chest tall and knees tracking over your toes, then stand.", equip: ["dumbbell"] },
@@ -107,6 +109,10 @@ const LIBRARY = {
       { name: "Jump Squats", target: "10–15 reps", info: "Squat down, jump as high as you can, land soft and go straight into the next rep." },
       { name: "Jump Lunges", target: "8–12 / leg", info: "Lunge, jump and switch legs mid-air, land soft into the next lunge." },
       { name: "Kettlebell Swings", target: "15–25 reps", info: "Hinge at the hips and snap them forward to float the bell to chest height. Hips do the work, not arms.", equip: ["kettlebell"] },
+      { name: "Single-Leg Calf Raises", target: "12–20 / leg", info: "All your weight on one foot, the other ankle hooked behind it. Rise as high as you can, pause, lower slowly." },
+      { name: "DB Calf Raises", target: "15–20 reps", info: "A dumbbell in each hand at your sides. Rise onto your toes, pause at the top, lower under control.", equip: ["dumbbell"] },
+      { name: "Deficit Calf Raises (Loaded)", target: "12–20 reps", info: "Toes on the bench edge, dumbbells at your sides. Heels drop for the stretch, then press up tall.", equip: ["dumbbell", "bench"] },
+      { name: "Pogo Hops", target: "30–50 total", info: "Small fast hops off the balls of your feet, knees nearly straight. Stay springy and spend as little time on the ground as you can." },
     ],
     3: [
       { name: "Pistol Squat Progressions", target: "5–8 / leg", info: "Box pistol → assisted → full. One leg out front, sit down under control, stand back up." },
@@ -117,6 +123,10 @@ const LIBRARY = {
       { name: "Weighted Glute Bridges", target: "12–20 reps", info: "Glute bridge with a dumbbell across your hips. Squeeze hard at the top.", equip: ["dumbbell"] },
       { name: "KB Overhead Squats", target: "6–10 / arm", info: "Bell locked out overhead, eyes on it. Squat deep keeping that arm vertical.", equip: ["kettlebell"] },
       { name: "Weighted Bulgarian Split Squats", target: "8–12 / leg", info: "Rear foot on the bench, dumbbells in hand. Lower until the front thigh is parallel, drive up.", equip: ["dumbbell", "bench"] },
+      { name: "Weighted Single-Leg Calf Raises", target: "10–15 / leg", info: "One foot planted, a dumbbell in the same-side hand. Rise onto the toes, pause hard at the top, lower slowly.", equip: ["dumbbell"] },
+      { name: "Deficit Single-Leg Calf Raises", target: "10–15 / leg", info: "One toe on the bench edge, heel hanging free. Full stretch at the bottom, full squeeze at the top.", equip: ["bench"] },
+      { name: "Tempo Calf Raises", target: "10–15 reps", info: "Three seconds up, two-second hold, four seconds down. The burn is the whole point — don't rush it." },
+      { name: "Single-Leg Pogo Hops", target: "20–30 / leg", info: "Fast low hops on one foot off the ball of the foot. Knee stays nearly straight, ankle does the work." },
     ],
   },
 
